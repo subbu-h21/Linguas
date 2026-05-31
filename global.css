@@ -1,0 +1,327 @@
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css";
+
+@import "nativewind/theme";
+
+/* ─────────────────────────────────────────────
+   DESIGN TOKENS  (Tailwind v4 @theme)
+   All CSS vars here become Tailwind utilities:
+     --color-*       → bg-* / text-* / border-*
+     --font-*        → font-*
+     --text-*        → text-*  (font-size)
+     --radius-*      → rounded-*
+   ──────────────────────────────────────────── */
+@theme {
+  /* ── Primary brand ── */
+  --color-primary: #6C4EF5;
+  --color-primary-dark: #5B3BF6;
+  --color-accent: #4D88FF;
+  --color-green: #21C16B;
+
+  /* ── Semantic ── */
+  --color-success: #21C16B;
+  --color-warning: #FFCB00;
+  --color-streak: #FF8A00;
+  --color-error: #FF4D4F;
+  --color-info: #4D88FF;
+
+  /* ── Neutrals ── */
+  --color-foreground: #001132;
+  --color-muted: #6B7280;
+  --color-border: #E5E7EB;
+  --color-surface: #F6F7FB;
+  --color-background: #FFFFFF;
+
+  /* ── Font families (names match useFonts keys) ── */
+  --font-poppins: "Poppins-Regular";
+  --font-poppins-medium: "Poppins-Medium";
+  --font-poppins-semibold: "Poppins-SemiBold";
+  --font-poppins-bold: "Poppins-Bold";
+
+  /* ── Font sizes (design spec: H1 → Caption) ── */
+  --text-h1: 32px;
+  --text-h2: 24px;
+  --text-h3: 20px;
+  --text-h4: 16px;
+  --text-body-lg: 16px;
+  --text-body-md: 14px;
+  --text-body-sm: 13px;
+  --text-caption: 11px;
+
+  /* ── Border radii ── */
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+}
+
+/* ─────────────────────────────────────────────
+   BEM UTILITY CLASSES
+   Composable, reusable patterns for the app.
+   Follows BEM: block, block--modifier, block__element
+   ──────────────────────────────────────────── */
+@layer utilities {
+
+  /* ── Screen / page container ── */
+  .screen {
+    @apply flex-1 bg-background;
+  }
+
+  .screen--surface {
+    @apply flex-1 bg-surface;
+  }
+
+  /* ── Card ── */
+  .card {
+    @apply bg-background rounded-2xl p-4;
+  }
+
+  .card--surface {
+    @apply bg-surface rounded-2xl p-4;
+  }
+
+  .card--bordered {
+    @apply bg-background rounded-2xl p-4 border border-border;
+  }
+
+  .card--elevated {
+    @apply bg-background rounded-2xl p-4;
+  }
+
+  /* ── Button base (block) ── */
+  .btn {
+    @apply rounded-2xl py-4 px-6 items-center justify-center;
+  }
+
+  /* Button modifiers */
+  .btn--primary {
+    @apply rounded-2xl py-4 px-6 items-center justify-center bg-primary;
+  }
+
+  .btn--secondary {
+    @apply rounded-2xl py-4 px-6 items-center justify-center bg-surface border border-border;
+  }
+
+  .btn--success {
+    @apply rounded-2xl py-4 px-6 items-center justify-center bg-success;
+  }
+
+  .btn--danger {
+    @apply rounded-2xl py-4 px-6 items-center justify-center bg-error;
+  }
+
+  .btn--outline {
+    @apply rounded-2xl py-4 px-6 items-center justify-center border-2 border-primary bg-background;
+  }
+
+  /* Button elements */
+  .btn__text {
+    @apply text-h4 font-poppins-semibold;
+  }
+
+  .btn__text--light {
+    @apply text-h4 font-poppins-semibold text-background;
+  }
+
+  .btn__text--dark {
+    @apply text-h4 font-poppins-semibold text-foreground;
+  }
+
+  .btn__text--primary {
+    @apply text-h4 font-poppins-semibold text-primary;
+  }
+
+  /* ── Typography shortcuts ── */
+  .text--h1 {
+    @apply text-h1 font-poppins-bold text-foreground;
+  }
+
+  .text--h2 {
+    @apply text-h2 font-poppins-semibold text-foreground;
+  }
+
+  .text--h3 {
+    @apply text-h3 font-poppins-semibold text-foreground;
+  }
+
+  .text--h4 {
+    @apply text-h4 font-poppins-medium text-foreground;
+  }
+
+  .text--body-lg {
+    @apply text-body-lg font-poppins text-foreground;
+  }
+
+  .text--body-md {
+    @apply text-body-md font-poppins text-foreground;
+  }
+
+  .text--body-sm {
+    @apply text-body-sm font-poppins text-muted;
+  }
+
+  .text--caption {
+    @apply text-caption font-poppins text-muted;
+  }
+
+  /* Muted / secondary text modifiers */
+  .text--muted {
+    @apply text-muted;
+  }
+
+  .text--primary-color {
+    @apply text-primary;
+  }
+
+  .text--success {
+    @apply text-success;
+  }
+
+  .text--error {
+    @apply text-error;
+  }
+
+  .text--warning {
+    @apply text-warning;
+  }
+
+  /* ── Badge ── */
+  .badge {
+    @apply rounded-full px-3 py-1 items-center justify-center self-start;
+  }
+
+  .badge--success {
+    @apply rounded-full px-3 py-1 items-center justify-center self-start bg-success;
+  }
+
+  .badge--warning {
+    @apply rounded-full px-3 py-1 items-center justify-center self-start bg-warning;
+  }
+
+  .badge--error {
+    @apply rounded-full px-3 py-1 items-center justify-center self-start bg-error;
+  }
+
+  .badge--streak {
+    @apply rounded-full px-3 py-1 items-center justify-center self-start bg-streak;
+  }
+
+  .badge--info {
+    @apply rounded-full px-3 py-1 items-center justify-center self-start bg-info;
+  }
+
+  .badge--surface {
+    @apply rounded-full px-3 py-1 items-center justify-center self-start bg-surface border border-border;
+  }
+
+  .badge__text {
+    @apply text-caption font-poppins-semibold text-background;
+  }
+
+  .badge__text--dark {
+    @apply text-caption font-poppins-semibold text-foreground;
+  }
+
+  /* ── Divider ── */
+  .divider {
+    @apply border-b border-border;
+  }
+
+  .divider--vertical {
+    @apply border-r border-border;
+  }
+
+  /* ── Input field ── */
+  .input {
+    @apply bg-surface border border-border rounded-xl px-4 py-3 text-body-md font-poppins text-foreground;
+  }
+
+  .input--focused {
+    @apply bg-background border border-primary rounded-xl px-4 py-3 text-body-md font-poppins text-foreground;
+  }
+
+  .input--error {
+    @apply bg-background border border-error rounded-xl px-4 py-3 text-body-md font-poppins text-foreground;
+  }
+
+  .input__label {
+    @apply text-body-sm font-poppins-medium text-foreground mb-1;
+  }
+
+  .input__hint {
+    @apply text-caption font-poppins text-muted mt-1;
+  }
+
+  .input__error {
+    @apply text-caption font-poppins text-error mt-1;
+  }
+
+  /* ── Progress bar ── */
+  .progress {
+    @apply h-3 bg-surface rounded-full overflow-hidden;
+  }
+
+  .progress__fill {
+    @apply h-full bg-primary rounded-full;
+  }
+
+  .progress__fill--success {
+    @apply h-full bg-success rounded-full;
+  }
+
+  /* ── XP / stat pill ── */
+  .stat-pill {
+    @apply flex-row items-center gap-1 bg-surface rounded-full px-3 py-1.5;
+  }
+
+  .stat-pill__text {
+    @apply text-body-sm font-poppins-semibold text-foreground;
+  }
+
+  /* ── Avatar ── */
+  .avatar {
+    @apply rounded-full bg-surface overflow-hidden items-center justify-center;
+  }
+
+  .avatar--sm {
+    @apply w-8 h-8 rounded-full bg-surface overflow-hidden items-center justify-center;
+  }
+
+  .avatar--md {
+    @apply w-12 h-12 rounded-full bg-surface overflow-hidden items-center justify-center;
+  }
+
+  .avatar--lg {
+    @apply w-16 h-16 rounded-full bg-surface overflow-hidden items-center justify-center;
+  }
+
+  /* ── Row / layout helpers ── */
+  .row {
+    @apply flex-row items-center;
+  }
+
+  .row--between {
+    @apply flex-row items-center justify-between;
+  }
+
+  .row--center {
+    @apply flex-row items-center justify-center;
+  }
+
+  /* ── Section header ── */
+  .section-header {
+    @apply flex-row items-center justify-between mb-3;
+  }
+
+  .section-header__title {
+    @apply text-h3 font-poppins-semibold text-foreground;
+  }
+
+  .section-header__action {
+    @apply text-body-sm font-poppins-semibold text-primary;
+  }
+}
