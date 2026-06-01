@@ -1,0 +1,251 @@
+import { useState } from "react";
+import {
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
+
+import { images } from "@/constants/images";
+import OTPModal from "@/components/OTPModal";
+import SocialButton from "@/components/SocialButton";
+
+export default function SignUp() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [otpVisible, setOtpVisible] = useState(false);
+
+  const clearErrors = () => {
+    setEmailError("");
+    setPasswordError("");
+  };
+
+  const handleSignUp = () => {
+    const eErr = email.trim() ? "" : "Email is required";
+    const pErr = password.trim() ? "" : "Password is required";
+    setEmailError(eErr);
+    setPasswordError(pErr);
+    if (eErr || pErr) return;
+    setOtpVisible(true);
+  };
+
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+      {/* Back button */}
+      <TouchableOpacity
+        onPress={() => router.back()}
+        style={styles.backButton}
+        activeOpacity={0.7}
+      >
+        <Text style={styles.backArrow}>←</Text>
+      </TouchableOpacity>
+
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        <Pressable onPress={clearErrors}>
+        {/* Title */}
+        <Text className="text-h1 font-poppins-bold text-foreground mt-2">
+          Create your account
+        </Text>
+        <Text className="text-body-md font-poppins text-muted mt-1">
+          Start your language journey today ✨
+        </Text>
+
+        {/* Mascot */}
+        <View className="items-center py-5">
+          <Image
+            source={images.mascotWelcome}
+            style={{ width: 150, height: 150 }}
+            resizeMode="contain"
+          />
+        </View>
+
+        {/* Email Input */}
+        <View className="mb-4">
+          <View
+            style={[
+              styles.inputContainer,
+              emailError ? styles.inputContainerError : null,
+            ]}
+          >
+            <Text className="text-caption font-poppins text-muted">Email</Text>
+            <TextInput
+              value={email}
+              onChangeText={(t) => {
+                setEmail(t);
+                if (emailError) setEmailError("");
+              }}
+              placeholder="alex@gmail.com"
+              placeholderTextColor="#9CA3AF"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+              style={styles.textInput}
+            />
+          </View>
+          {emailError ? (
+            <Text style={styles.errorText}>{emailError}</Text>
+          ) : null}
+        </View>
+
+        {/* Password Input */}
+        <View className="mb-6">
+          <View
+            style={[
+              styles.inputContainer,
+              passwordError ? styles.inputContainerError : null,
+            ]}
+          >
+            <Text className="text-caption font-poppins text-muted">
+              Password
+            </Text>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <TextInput
+                value={password}
+                onChangeText={(t) => {
+                  setPassword(t);
+                  if (passwordError) setPasswordError("");
+                }}
+                placeholder="••••••••"
+                placeholderTextColor="#9CA3AF"
+                secureTextEntry={!showPassword}
+                style={[styles.textInput, { flex: 1 }]}
+              />
+              <TouchableOpacity
+                onPress={() => setShowPassword((v) => !v)}
+                style={styles.eyeButton}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.eyeIcon}>{showPassword ? "🙈" : "👁"}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          {passwordError ? (
+            <Text style={styles.errorText}>{passwordError}</Text>
+          ) : null}
+        </View>
+
+        {/* Sign Up Button — always pressable so errors can appear; visually dimmed when empty */}
+        <TouchableOpacity
+          className="btn--primary"
+          onPress={handleSignUp}
+          activeOpacity={0.85}
+        >
+          <Text className="btn__text--light">Sign Up</Text>
+        </TouchableOpacity>
+
+        {/* Divider */}
+        <View className="flex-row items-center gap-3 my-6">
+          <View className="flex-1 h-px bg-border" />
+          <Text className="text-body-sm font-poppins text-muted">
+            or continue with
+          </Text>
+          <View className="flex-1 h-px bg-border" />
+        </View>
+
+        {/* Social Buttons */}
+        <View className="gap-3">
+          <SocialButton
+            icon="G"
+            iconBg="#FFFFFF"
+            iconColor="#4285F4"
+            label="Continue with Google"
+          />
+          <SocialButton
+            icon="f"
+            iconBg="#1877F2"
+            iconColor="#FFFFFF"
+            label="Continue with Facebook"
+          />
+          <SocialButton
+            icon="A"
+            iconBg="#000000"
+            iconColor="#FFFFFF"
+            label="Continue with Apple"
+          />
+        </View>
+
+        {/* Sign In Link */}
+        <View className="flex-row justify-center mt-8">
+          <Text className="text-body-sm font-poppins text-muted">
+            Already have an account?{" "}
+          </Text>
+          <TouchableOpacity
+            onPress={() => router.replace("/(auth)/sign-in")}
+            activeOpacity={0.7}
+          >
+            <Text className="text-body-sm font-poppins-semibold text-primary">
+              Log in
+            </Text>
+          </TouchableOpacity>
+        </View>
+        </Pressable>
+      </ScrollView>
+
+      <OTPModal
+        visible={otpVisible}
+        email={email}
+        onClose={() => setOtpVisible(false)}
+      />
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  backButton: {
+    padding: 16,
+    alignSelf: "flex-start",
+  },
+  backArrow: {
+    fontSize: 22,
+    color: "#001132",
+  },
+  scrollContent: {
+    paddingHorizontal: 24,
+    paddingBottom: 40,
+  },
+  inputContainer: {
+    borderWidth: 1.5,
+    borderColor: "#E5E7EB",
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingTop: 10,
+    paddingBottom: 8,
+    backgroundColor: "#FFFFFF",
+  },
+  inputContainerError: {
+    borderColor: "#FF4D4F",
+  },
+  textInput: {
+    fontFamily: "Poppins-Regular",
+    fontSize: 14,
+    color: "#001132",
+    paddingVertical: 4,
+  },
+  eyeButton: {
+    paddingHorizontal: 4,
+  },
+  eyeIcon: {
+    fontSize: 18,
+  },
+  errorText: {
+    fontFamily: "Poppins-Regular",
+    fontSize: 11,
+    color: "#FF4D4F",
+    marginTop: 4,
+    paddingHorizontal: 4,
+  },
+});
