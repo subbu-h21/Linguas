@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -23,13 +23,21 @@ export default function OTPModal({ visible, email, onClose }: OTPModalProps) {
   const router = useRouter();
   const [code, setCode] = useState("");
   const inputRef = useRef<TextInput>(null);
+  const navTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (navTimer.current) clearTimeout(navTimer.current);
+    };
+  }, []);
 
   const handleChangeText = (text: string) => {
     const digits = text.replace(/\D/g, "").slice(0, 6);
     setCode(digits);
     if (digits.length === 6) {
       Keyboard.dismiss();
-      setTimeout(() => {
+      // TODO: replace with real Clerk OTP verification before navigating
+      navTimer.current = setTimeout(() => {
         router.replace("/");
       }, 300);
     }

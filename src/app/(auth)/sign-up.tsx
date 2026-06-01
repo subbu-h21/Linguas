@@ -138,7 +138,7 @@ export default function SignUp() {
           ) : null}
         </View>
 
-        {/* Sign Up Button — always pressable so errors can appear; visually dimmed when empty */}
+        {/* Sign Up Button */}
         <TouchableOpacity
           className="btn--primary"
           onPress={handleSignUp}

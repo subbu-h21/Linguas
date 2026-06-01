@@ -93,7 +93,7 @@ export default function SignIn() {
           ) : null}
         </View>
 
-        {/* Log In Button — visually dimmed when email is empty */}
+        {/* Log In Button */}
         <TouchableOpacity
           className="btn--primary"
           onPress={handleSignIn}
