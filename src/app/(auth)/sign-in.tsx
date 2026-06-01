@@ -39,7 +39,7 @@ export default function SignIn() {
         className="p-4 self-start"
         activeOpacity={0.7}
       >
-        <Text className="text-[22px] text-foreground">←</Text>
+        <Text className="text-[22px] font-poppins text-foreground">←</Text>
       </TouchableOpacity>
 
       <ScrollView
