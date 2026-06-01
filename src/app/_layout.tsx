@@ -1,3 +1,4 @@
+// trigger coderabbit review
 import "../../global.css";
 
 import { useFonts } from "expo-font";

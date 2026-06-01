@@ -1,3 +1,4 @@
+// trigger coderabbit review
 import { useEffect, useRef, useState } from "react";
 import {
   Keyboard,
@@ -36,6 +37,8 @@ export default function OTPModal({ visible, email, onClose }: OTPModalProps) {
     setCode(digits);
     if (digits.length === 6) {
       Keyboard.dismiss();
+      // Cancel any previous timer before scheduling a new one
+      if (navTimer.current) clearTimeout(navTimer.current);
       // TODO: replace with real Clerk OTP verification before navigating
       navTimer.current = setTimeout(() => {
         router.replace("/");
@@ -44,6 +47,7 @@ export default function OTPModal({ visible, email, onClose }: OTPModalProps) {
   };
 
   const handleClose = () => {
+    if (navTimer.current) clearTimeout(navTimer.current);
     setCode("");
     onClose();
   };
