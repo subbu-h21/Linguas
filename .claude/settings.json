@@ -1,4 +1,10 @@
 {
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:docs.coderabbit.ai)",
+      "WebFetch(domain:www.coderabbit.ai)"
+    ]
+  },
   "enabledPlugins": {
     "expo@claude-plugins-official": true
   }

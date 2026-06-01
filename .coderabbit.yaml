@@ -1,0 +1,56 @@
+language: en-US
+
+reviews:
+  profile: assertive
+  request_changes_workflow: true
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+
+  path_instructions:
+    - path: "src/app/**"
+      instructions: |
+        This folder is for routes and screens only.
+        Screens should compose components and call hooks/stores.
+        Screens must not contain large reusable UI blocks or complex business logic.
+
+    - path: "src/components/**"
+      instructions: |
+        Components should only be created when reused in multiple places, or when they represent a clear UI concept like LessonCard, XPBar, LanguageCard, or PrimaryButton.
+        Avoid tiny one-off components.
+
+    - path: "src/store/**"
+      instructions: |
+        Use Zustand for global state.
+        Persist with AsyncStorage when needed.
+        Do not use any for types.
+
+    - path: "src/lib/**"
+      instructions: |
+        Never expose secret keys or tokens in this folder.
+        All AI calls and Stream tokens must go through backend/serverless routes.
+
+    - path: "**/*.tsx"
+      instructions: |
+        Styling rules:
+        - Use NativeWind/Tailwind className for all styling by default.
+        - Do NOT use StyleSheet or inline styles unless the component is one of these exceptions:
+          SafeAreaView, KeyboardAvoidingView, Animated.View, Modal, dynamic/runtime styles, platform-specific styles, shadow, transform arrays, or z-index.
+        - Do NOT use the Button component from React Native. Use TouchableOpacity with custom styles instead.
+        - ScrollView contentContainerStyle must use StyleSheet, not className.
+        - TextInput underlineColorAndroid must use inline style, not className.
+
+    - path: "**/*.ts,**/*.tsx"
+      instructions: |
+        TypeScript rules:
+        - Do not use `any`. Use proper types.
+        - Keep types simple and readable.
+        - Avoid overengineering and unnecessary abstractions.
+
+  auto_review:
+    enabled: true
+    drafts: false
+
+chat:
+  auto_reply: true
