@@ -44,10 +44,10 @@ export default function SignUp() {
       {/* Back button */}
       <TouchableOpacity
         onPress={() => router.back()}
-        className="p-4 self-start"
+        style={styles.backButton}
         activeOpacity={0.7}
       >
-        <Text className="text-[22px] text-foreground">←</Text>
+        <Text style={styles.backArrow}>←</Text>
       </TouchableOpacity>
 
       <ScrollView
@@ -68,7 +68,7 @@ export default function SignUp() {
         <View className="items-center py-5">
           <Image
             source={images.mascotWelcome}
-            className="w-[150px] h-[150px]"
+            style={{ width: 150, height: 150 }}
             resizeMode="contain"
           />
         </View>
@@ -97,9 +97,7 @@ export default function SignUp() {
             />
           </View>
           {emailError ? (
-            <Text className="text-caption font-poppins text-error mt-1 px-1">
-              {emailError}
-            </Text>
+            <Text style={styles.errorText}>{emailError}</Text>
           ) : null}
         </View>
 
@@ -114,7 +112,7 @@ export default function SignUp() {
             <Text className="text-caption font-poppins text-muted">
               Password
             </Text>
-            <View className="flex-row items-center">
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
               <TextInput
                 value={password}
                 onChangeText={(t) => {
@@ -128,17 +126,15 @@ export default function SignUp() {
               />
               <TouchableOpacity
                 onPress={() => setShowPassword((v) => !v)}
-                className="px-1"
+                style={styles.eyeButton}
                 activeOpacity={0.7}
               >
-                <Text className="text-[18px]">{showPassword ? "🙈" : "👁"}</Text>
+                <Text style={styles.eyeIcon}>{showPassword ? "🙈" : "👁"}</Text>
               </TouchableOpacity>
             </View>
           </View>
           {passwordError ? (
-            <Text className="text-caption font-poppins text-error mt-1 px-1">
-              {passwordError}
-            </Text>
+            <Text style={styles.errorText}>{passwordError}</Text>
           ) : null}
         </View>
 
@@ -209,6 +205,14 @@ export default function SignUp() {
 }
 
 const styles = StyleSheet.create({
+  backButton: {
+    padding: 16,
+    alignSelf: "flex-start",
+  },
+  backArrow: {
+    fontSize: 22,
+    color: "#001132",
+  },
   scrollContent: {
     paddingHorizontal: 24,
     paddingBottom: 40,
@@ -230,5 +234,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#001132",
     paddingVertical: 4,
+  },
+  eyeButton: {
+    paddingHorizontal: 4,
+  },
+  eyeIcon: {
+    fontSize: 18,
+  },
+  errorText: {
+    fontFamily: "Poppins-Regular",
+    fontSize: 11,
+    color: "#FF4D4F",
+    marginTop: 4,
+    paddingHorizontal: 4,
   },
 });
