@@ -1,4 +1,3 @@
-// trigger coderabbit review
 import { Link } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
 

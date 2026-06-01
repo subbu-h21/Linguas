@@ -1,4 +1,3 @@
-// trigger coderabbit review
 import { useEffect, useRef, useState } from "react";
 import {
   Keyboard,
@@ -71,7 +70,7 @@ export default function OTPModal({ visible, email, onClose }: OTPModalProps) {
             style={{ width: "100%" }}
           >
             <TouchableWithoutFeedback>
-              <View style={styles.sheet}>
+              <View className="bg-background rounded-tl-2xl rounded-tr-2xl pt-8 px-8 pb-12">
                 {/* Invisible input that owns the number pad — must have non-zero size to be focusable */}
                 <TextInput
                   ref={inputRef}
@@ -115,7 +114,7 @@ export default function OTPModal({ visible, email, onClose }: OTPModalProps) {
                             : styles.digitBoxIdle,
                         ]}
                       >
-                        <Text style={styles.digitText}>{code[i] ?? ""}</Text>
+                        <Text className="text-h2 font-poppins-bold text-foreground">{code[i] ?? ""}</Text>
                       </View>
                     );
                   })}
@@ -143,13 +142,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.5)",
     justifyContent: "flex-end",
   },
-  sheet: {
-    backgroundColor: "#FFFFFF",
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    padding: 32,
-    paddingBottom: 48,
-  },
   hiddenInput: {
     position: "absolute",
     opacity: 0,
@@ -173,10 +165,5 @@ const styles = StyleSheet.create({
   digitBoxIdle: {
     borderColor: "#E5E7EB",
     backgroundColor: "#F6F7FB",
-  },
-  digitText: {
-    fontSize: 24,
-    fontFamily: "Poppins-Bold",
-    color: "#001132",
   },
 });

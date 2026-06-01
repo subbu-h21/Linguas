@@ -1,5 +1,4 @@
-// trigger coderabbit review
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 
 interface SocialButtonProps {
   label: string;
@@ -18,46 +17,21 @@ export default function SocialButton({
 }: SocialButtonProps) {
   return (
     <TouchableOpacity
-      style={styles.button}
+      className="flex-row items-center justify-center bg-background border border-border rounded-2xl py-3.5 px-5 gap-2.5"
       onPress={onPress}
       activeOpacity={0.75}
     >
-      <View style={[styles.iconCircle, { backgroundColor: iconBg }]}>
-        <Text style={[styles.iconText, { color: iconColor }]}>{icon}</Text>
+      <View
+        className="w-7 h-7 rounded-full items-center justify-center"
+        style={{ backgroundColor: iconBg }}
+      >
+        <Text className="text-sm font-poppins-bold" style={{ color: iconColor }}>
+          {icon}
+        </Text>
       </View>
-      <Text style={styles.label}>{label}</Text>
+      <Text className="text-body-md font-poppins-semibold text-foreground">
+        {label}
+      </Text>
     </TouchableOpacity>
   );
 }
-
-const styles = StyleSheet.create({
-  button: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#FFFFFF",
-    borderWidth: 1.5,
-    borderColor: "#E5E7EB",
-    borderRadius: 16,
-    paddingVertical: 14,
-    paddingHorizontal: 20,
-    gap: 10,
-  },
-  iconCircle: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  iconText: {
-    fontSize: 14,
-    fontWeight: "700",
-    fontFamily: "Poppins-Bold",
-  },
-  label: {
-    fontSize: 14,
-    fontFamily: "Poppins-SemiBold",
-    color: "#001132",
-  },
-});

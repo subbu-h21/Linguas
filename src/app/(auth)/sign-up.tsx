@@ -1,4 +1,3 @@
-// trigger coderabbit review
 import { useState } from "react";
 import {
   Image,
@@ -45,10 +44,10 @@ export default function SignUp() {
       {/* Back button */}
       <TouchableOpacity
         onPress={() => router.back()}
-        style={styles.backButton}
+        className="p-4 self-start"
         activeOpacity={0.7}
       >
-        <Text style={styles.backArrow}>←</Text>
+        <Text className="text-[22px] text-foreground">←</Text>
       </TouchableOpacity>
 
       <ScrollView
@@ -69,7 +68,7 @@ export default function SignUp() {
         <View className="items-center py-5">
           <Image
             source={images.mascotWelcome}
-            style={{ width: 150, height: 150 }}
+            className="w-[150px] h-[150px]"
             resizeMode="contain"
           />
         </View>
@@ -98,7 +97,9 @@ export default function SignUp() {
             />
           </View>
           {emailError ? (
-            <Text style={styles.errorText}>{emailError}</Text>
+            <Text className="text-caption font-poppins text-error mt-1 px-1">
+              {emailError}
+            </Text>
           ) : null}
         </View>
 
@@ -113,7 +114,7 @@ export default function SignUp() {
             <Text className="text-caption font-poppins text-muted">
               Password
             </Text>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View className="flex-row items-center">
               <TextInput
                 value={password}
                 onChangeText={(t) => {
@@ -127,15 +128,17 @@ export default function SignUp() {
               />
               <TouchableOpacity
                 onPress={() => setShowPassword((v) => !v)}
-                style={styles.eyeButton}
+                className="px-1"
                 activeOpacity={0.7}
               >
-                <Text style={styles.eyeIcon}>{showPassword ? "🙈" : "👁"}</Text>
+                <Text className="text-[18px]">{showPassword ? "🙈" : "👁"}</Text>
               </TouchableOpacity>
             </View>
           </View>
           {passwordError ? (
-            <Text style={styles.errorText}>{passwordError}</Text>
+            <Text className="text-caption font-poppins text-error mt-1 px-1">
+              {passwordError}
+            </Text>
           ) : null}
         </View>
 
@@ -206,14 +209,6 @@ export default function SignUp() {
 }
 
 const styles = StyleSheet.create({
-  backButton: {
-    padding: 16,
-    alignSelf: "flex-start",
-  },
-  backArrow: {
-    fontSize: 22,
-    color: "#001132",
-  },
   scrollContent: {
     paddingHorizontal: 24,
     paddingBottom: 40,
@@ -235,18 +230,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#001132",
     paddingVertical: 4,
-  },
-  eyeButton: {
-    paddingHorizontal: 4,
-  },
-  eyeIcon: {
-    fontSize: 18,
-  },
-  errorText: {
-    fontFamily: "Poppins-Regular",
-    fontSize: 11,
-    color: "#FF4D4F",
-    marginTop: 4,
-    paddingHorizontal: 4,
   },
 });
