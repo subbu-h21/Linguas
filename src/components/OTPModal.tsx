@@ -70,7 +70,7 @@ export default function OTPModal({ visible, email, onClose }: OTPModalProps) {
             style={{ width: "100%" }}
           >
             <TouchableWithoutFeedback>
-              <View style={styles.sheet}>
+              <View className="bg-background rounded-t-2xl p-8 pb-12">
                 {/* Invisible input that owns the number pad — must have non-zero size to be focusable */}
                 <TextInput
                   ref={inputRef}
@@ -107,14 +107,15 @@ export default function OTPModal({ visible, email, onClose }: OTPModalProps) {
                     return (
                       <View
                         key={i}
-                        style={[
-                          styles.digitBox,
+                        className={`w-12 h-14 rounded-xl border-2 items-center justify-center ${
                           isFocused || isFilled
-                            ? styles.digitBoxActive
-                            : styles.digitBoxIdle,
-                        ]}
+                            ? "border-primary bg-background"
+                            : "border-border bg-surface"
+                        }`}
                       >
-                        <Text style={styles.digitText}>{code[i] ?? ""}</Text>
+                        <Text className="text-h2 font-poppins-bold text-foreground">
+                          {code[i] ?? ""}
+                        </Text>
                       </View>
                     );
                   })}
@@ -142,13 +143,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.5)",
     justifyContent: "flex-end",
   },
-  sheet: {
-    backgroundColor: "#FFFFFF",
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    padding: 32,
-    paddingBottom: 48,
-  },
   hiddenInput: {
     position: "absolute",
     opacity: 0,
@@ -156,26 +150,5 @@ const styles = StyleSheet.create({
     width: 1,
     top: 0,
     left: 0,
-  },
-  digitBox: {
-    width: 48,
-    height: 56,
-    borderRadius: 12,
-    borderWidth: 2,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  digitBoxActive: {
-    borderColor: "#6C4EF5",
-    backgroundColor: "#FFFFFF",
-  },
-  digitBoxIdle: {
-    borderColor: "#E5E7EB",
-    backgroundColor: "#F6F7FB",
-  },
-  digitText: {
-    fontSize: 24,
-    fontFamily: "Poppins-Bold",
-    color: "#001132",
   },
 });
