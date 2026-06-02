@@ -47,6 +47,7 @@ export default function SignUp() {
   };
 
   const handleSignUp = async () => {
+    setOtpError("");
     const trimmedEmail = email.trim().toLowerCase();
     const eErr = trimmedEmail ? "" : "Email is required";
     const pErr = password.trim() ? "" : "Password is required";
@@ -64,9 +65,14 @@ export default function SignUp() {
     // no manual parsing needed here.
     if (error) return;
 
-    const { error: sendError } = await signUp.verifications.sendEmailCode();
-    if (sendError) {
-      setEmailError(sendError.message || "Could not send verification code.");
+    try {
+      const { error: sendError } = await signUp.verifications.sendEmailCode();
+      if (sendError) {
+        setEmailError(sendError.message || "Could not send verification code.");
+        return;
+      }
+    } catch (err: unknown) {
+      setEmailError(err instanceof Error ? err.message : "Could not send verification code.");
       return;
     }
     setOtpVisible(true);
@@ -308,7 +314,7 @@ export default function SignUp() {
       <OTPModal
         visible={otpVisible}
         email={email}
-        onClose={() => setOtpVisible(false)}
+        onClose={() => { setOtpVisible(false); setOtpError(""); }}
         onVerify={handleVerify}
         error={otpError}
         onResend={handleResend}

@@ -60,6 +60,7 @@ export default function SignIn() {
       return;
     }
 
+    setOtpError("");
     setOtpVisible(true);
   };
 
@@ -253,7 +254,7 @@ export default function SignIn() {
       <OTPModal
         visible={otpVisible}
         email={email}
-        onClose={() => setOtpVisible(false)}
+        onClose={() => { setOtpVisible(false); setOtpError(""); }}
         onVerify={handleVerify}
         error={otpError}
         onResend={handleResend}
