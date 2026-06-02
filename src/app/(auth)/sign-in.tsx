@@ -47,12 +47,16 @@ export default function SignIn() {
     if (eErr) return;
 
     setEmail(trimmed);
-    const { error } = await signIn.emailCode.sendCode({
-      emailAddress: trimmed,
-    });
-
-    if (error) {
-      setEmailError(error.message ?? "Could not send code. Check your email.");
+    try {
+      const { error } = await signIn.emailCode.sendCode({ emailAddress: trimmed });
+      if (error) {
+        setEmailError(error.message ?? "Could not send code. Check your email.");
+        return;
+      }
+    } catch (err: unknown) {
+      setEmailError(
+        err instanceof Error ? err.message : "Could not send code. Check your email."
+      );
       return;
     }
 
@@ -77,8 +81,8 @@ export default function SignIn() {
       } else {
         setOtpError("Verification failed. Please try again.");
       }
-    } catch (err: any) {
-      setOtpError(err?.message || "Verification failed. Please try again.");
+    } catch (err: unknown) {
+      setOtpError(err instanceof Error ? err.message : "Verification failed. Please try again.");
     }
   };
 
@@ -89,8 +93,8 @@ export default function SignIn() {
         emailAddress: email.trim(),
       });
       if (error) setOtpError(error.message || "Could not resend code.");
-    } catch (err: any) {
-      setOtpError(err?.message || "Could not resend code.");
+    } catch (err: unknown) {
+      setOtpError(err instanceof Error ? err.message : "Could not resend code.");
     }
   };
 

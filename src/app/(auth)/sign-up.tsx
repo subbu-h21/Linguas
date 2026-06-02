@@ -64,7 +64,11 @@ export default function SignUp() {
     // no manual parsing needed here.
     if (error) return;
 
-    await signUp.verifications.sendEmailCode();
+    const { error: sendError } = await signUp.verifications.sendEmailCode();
+    if (sendError) {
+      setEmailError(sendError.message || "Could not send verification code.");
+      return;
+    }
     setOtpVisible(true);
   };
 
@@ -86,8 +90,8 @@ export default function SignUp() {
       } else {
         setOtpError("Verification failed. Please try again.");
       }
-    } catch (err: any) {
-      setOtpError(err?.message || "Verification failed. Please try again.");
+    } catch (err: unknown) {
+      setOtpError(err instanceof Error ? err.message : "Verification failed. Please try again.");
     }
   };
 
@@ -96,8 +100,8 @@ export default function SignUp() {
     try {
       const { error } = await signUp.verifications.sendEmailCode();
       if (error) setOtpError(error.message || "Could not resend code.");
-    } catch (err: any) {
-      setOtpError(err?.message || "Could not resend code.");
+    } catch (err: unknown) {
+      setOtpError(err instanceof Error ? err.message : "Could not resend code.");
     }
   };
 
