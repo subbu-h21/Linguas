@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "WebFetch(domain:docs.coderabbit.ai)",
-      "WebFetch(domain:www.coderabbit.ai)"
+      "WebFetch(domain:www.coderabbit.ai)",
+      "PowerShell(Copy-Item \"d:\\\\code_files\\\\duolingo_clone\\\\26-05-15 - Build your first mobile App with AI _ getStream\\\\assets\\\\assets\\\\images\\\\earth.png\" \"d:\\\\code_files\\\\duolingo_clone\\\\assets\\\\images\\\\earth.png\")"
     ]
   },
   "enabledPlugins": {

@@ -1,10 +1,11 @@
 import { useAuth, useClerk } from "@clerk/expo";
-import { Redirect } from "expo-router";
+import { Redirect, useRouter } from "expo-router";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 
 export default function Index() {
   const { isSignedIn, isLoaded } = useAuth();
   const { signOut } = useClerk();
+  const router = useRouter();
 
   if (!isLoaded) {
     return (
@@ -25,6 +26,13 @@ export default function Index() {
       <Text className="text-body-md font-poppins text-muted">
         Home screen coming soon!
       </Text>
+      <TouchableOpacity
+        className="btn--outline"
+        onPress={() => router.push("/language-selection")}
+        activeOpacity={0.85}
+      >
+        <Text className="btn__text--primary">Choose a Language</Text>
+      </TouchableOpacity>
       <TouchableOpacity
         className="btn--primary px-8"
         onPress={() => signOut()}
