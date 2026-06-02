@@ -57,8 +57,11 @@ export default function OTPModal({
     if (digits.length === 6) {
       Keyboard.dismiss();
       setIsVerifying(true);
-      await onVerify(digits);
-      setIsVerifying(false);
+      try {
+        await onVerify(digits);
+      } finally {
+        setIsVerifying(false);
+      }
     }
   };
 

@@ -41,12 +41,14 @@ export default function SignIn() {
   const clearErrors = () => setEmailError("");
 
   const handleSignIn = async () => {
-    const eErr = email.trim() ? "" : "Email is required";
+    const trimmed = email.trim();
+    const eErr = trimmed ? "" : "Email is required";
     setEmailError(eErr);
     if (eErr) return;
 
+    setEmail(trimmed);
     const { error } = await signIn.emailCode.sendCode({
-      emailAddress: email,
+      emailAddress: trimmed,
     });
 
     if (error) {
@@ -59,22 +61,37 @@ export default function SignIn() {
 
   const handleVerify = async (code: string) => {
     setOtpError("");
-    await signIn.emailCode.verifyCode({ code });
+    try {
+      const { error: verifyError } = await signIn.emailCode.verifyCode({ code });
+      if (verifyError) {
+        setOtpError(verifyError.message || "Invalid code.");
+        return;
+      }
 
-    if (signIn.status === "complete") {
-      await signIn.finalize({
-        navigate: ({ decorateUrl }) => {
-          router.replace(decorateUrl("/") as "/");
-        },
-      });
-    } else {
-      setOtpError("Verification failed. Please try again.");
+      if (signIn.status === "complete") {
+        await signIn.finalize({
+          navigate: ({ decorateUrl }) => {
+            router.replace(decorateUrl("/") as "/");
+          },
+        });
+      } else {
+        setOtpError("Verification failed. Please try again.");
+      }
+    } catch (err: any) {
+      setOtpError(err?.message || "Verification failed. Please try again.");
     }
   };
 
   const handleResend = async () => {
     setOtpError("");
-    await signIn.emailCode.sendCode({ emailAddress: email });
+    try {
+      const { error } = await signIn.emailCode.sendCode({
+        emailAddress: email.trim(),
+      });
+      if (error) setOtpError(error.message || "Could not resend code.");
+    } catch (err: any) {
+      setOtpError(err?.message || "Could not resend code.");
+    }
   };
 
   const handleGoogleOAuth = async () => {
@@ -201,12 +218,15 @@ export default function SignIn() {
               label="Continue with Facebook"
               onPress={handleFacebookOAuth}
             />
-            <SocialButton
-              icon="A"
-              iconBg="#000000"
-              iconColor="#FFFFFF"
-              label="Continue with Apple"
-            />
+            {/* Apple Sign In requires a native dev build — disabled until then */}
+            <View style={{ opacity: 0.4 }} pointerEvents="none">
+              <SocialButton
+                icon="A"
+                iconBg="#000000"
+                iconColor="#FFFFFF"
+                label="Continue with Apple"
+              />
+            </View>
           </View>
 
           {/* Sign Up Link */}

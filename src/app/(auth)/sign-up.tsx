@@ -47,14 +47,16 @@ export default function SignUp() {
   };
 
   const handleSignUp = async () => {
-    const eErr = email.trim() ? "" : "Email is required";
+    const trimmedEmail = email.trim().toLowerCase();
+    const eErr = trimmedEmail ? "" : "Email is required";
     const pErr = password.trim() ? "" : "Password is required";
     setEmailError(eErr);
     setPasswordError(pErr);
     if (eErr || pErr) return;
 
+    setEmail(trimmedEmail);
     const { error } = await signUp.password({
-      emailAddress: email,
+      emailAddress: trimmedEmail,
       password,
     });
 
@@ -68,22 +70,35 @@ export default function SignUp() {
 
   const handleVerify = async (code: string) => {
     setOtpError("");
-    await signUp.verifications.verifyEmailCode({ code });
+    try {
+      const { error: verifyError } = await signUp.verifications.verifyEmailCode({ code });
+      if (verifyError) {
+        setOtpError(verifyError.message || "Invalid code.");
+        return;
+      }
 
-    if (signUp.status === "complete") {
-      await signUp.finalize({
-        navigate: ({ decorateUrl }) => {
-          router.replace(decorateUrl("/") as "/");
-        },
-      });
-    } else {
-      setOtpError("Verification failed. Please try again.");
+      if (signUp.status === "complete") {
+        await signUp.finalize({
+          navigate: ({ decorateUrl }) => {
+            router.replace(decorateUrl("/") as "/");
+          },
+        });
+      } else {
+        setOtpError("Verification failed. Please try again.");
+      }
+    } catch (err: any) {
+      setOtpError(err?.message || "Verification failed. Please try again.");
     }
   };
 
   const handleResend = async () => {
     setOtpError("");
-    await signUp.verifications.sendEmailCode();
+    try {
+      const { error } = await signUp.verifications.sendEmailCode();
+      if (error) setOtpError(error.message || "Could not resend code.");
+    } catch (err: any) {
+      setOtpError(err?.message || "Could not resend code.");
+    }
   };
 
   const handleGoogleOAuth = async () => {
@@ -255,12 +270,15 @@ export default function SignUp() {
               label="Continue with Facebook"
               onPress={handleFacebookOAuth}
             />
-            <SocialButton
-              icon="A"
-              iconBg="#000000"
-              iconColor="#FFFFFF"
-              label="Continue with Apple"
-            />
+            {/* Apple Sign In requires a native dev build — disabled until then */}
+            <View style={{ opacity: 0.4 }} pointerEvents="none">
+              <SocialButton
+                icon="A"
+                iconBg="#000000"
+                iconColor="#FFFFFF"
+                label="Continue with Apple"
+              />
+            </View>
           </View>
 
           {/* Sign In Link */}
