@@ -1,4 +1,3 @@
-import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, {
@@ -6,56 +5,61 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
 } from 'react-native-reanimated';
-import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 import { useEffect } from 'react';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const TAB_COUNT = 5;
-const TAB_WIDTH = SCREEN_WIDTH / TAB_COUNT;
 const CIRCLE_SIZE = 50;
 const PAD_TOP = 10;
 
 type TabConfig = {
-  routeName: string;
   label: string;
   icon: keyof typeof Ionicons.glyphMap;
   activeIcon: keyof typeof Ionicons.glyphMap;
 };
 
-const TAB_CONFIG: TabConfig[] = [
-  { routeName: 'home', label: 'Home', icon: 'home-outline', activeIcon: 'home' },
-  { routeName: 'learn', label: 'Learn', icon: 'book-outline', activeIcon: 'book' },
-  {
-    routeName: 'ai-teacher',
-    label: 'AI Teacher',
-    icon: 'sparkles-outline',
-    activeIcon: 'sparkles',
-  },
-  {
-    routeName: 'chat',
-    label: 'Chat',
-    icon: 'chatbubble-outline',
-    activeIcon: 'chatbubble',
-  },
-  { routeName: 'profile', label: 'Profile', icon: 'person-outline', activeIcon: 'person' },
-];
+type TabBarProps = {
+  state: {
+    index: number;
+    routes: Array<{ key: string; name: string }>;
+  };
+  navigation: {
+    emit: (event: {
+      type: string;
+      target: string;
+      canPreventDefault: boolean;
+    }) => { defaultPrevented: boolean };
+    navigate: (name: string) => void;
+  };
+};
 
-function getCircleX(index: number) {
-  return index * TAB_WIDTH + (TAB_WIDTH - CIRCLE_SIZE) / 2;
+// Keyed by route name so lookup is always correct regardless of route order
+const TAB_CONFIG: Record<string, TabConfig> = {
+  home: { label: 'Home', icon: 'home-outline', activeIcon: 'home' },
+  learn: { label: 'Learn', icon: 'book-outline', activeIcon: 'book' },
+  'ai-teacher': { label: 'AI Teacher', icon: 'sparkles-outline', activeIcon: 'sparkles' },
+  chat: { label: 'Chat', icon: 'chatbubble-outline', activeIcon: 'chatbubble' },
+  profile: { label: 'Profile', icon: 'person-outline', activeIcon: 'person' },
+};
+
+function getCircleX(index: number, tabWidth: number) {
+  return index * tabWidth + (tabWidth - CIRCLE_SIZE) / 2;
 }
 
-export default function CustomTabBar({ state, navigation }: BottomTabBarProps) {
+export default function CustomTabBar({ state, navigation }: TabBarProps) {
   const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
+  const tabWidth = width / TAB_COUNT;
 
-  const circleX = useSharedValue(getCircleX(state.index));
+  const circleX = useSharedValue(getCircleX(state.index, tabWidth));
 
   useEffect(() => {
-    circleX.value = withSpring(getCircleX(state.index), {
+    circleX.value = withSpring(getCircleX(state.index, tabWidth), {
       damping: 20,
       stiffness: 220,
       mass: 0.8,
     });
-  }, [state.index]);
+  }, [state.index, tabWidth]);
 
   const circleStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: circleX.value }],
@@ -69,7 +73,7 @@ export default function CustomTabBar({ state, navigation }: BottomTabBarProps) {
       {/* Tab items */}
       <View style={styles.row}>
         {state.routes.map((route, index) => {
-          const tab = TAB_CONFIG[index];
+          const tab = TAB_CONFIG[route.name];
           if (!tab) return null;
           const isActive = state.index === index;
 
