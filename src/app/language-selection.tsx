@@ -129,9 +129,11 @@ function LanguageRow({
         <Text className="text-body-lg font-poppins-semibold text-foreground">
           {language.name}
         </Text>
-        <Text className="text-body-sm font-poppins text-muted">
-          {language.learners} learners
-        </Text>
+        {language.learners && (
+          <Text className="text-body-sm font-poppins text-muted">
+            {language.learners} learners
+          </Text>
+        )}
       </View>
       {isSelected ? (
         <View className="w-7 h-7 rounded-full bg-[#4D88FF] items-center justify-center">
