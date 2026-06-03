@@ -71,6 +71,7 @@ export interface Lesson {
   order: number;
   type: LessonType;
   xpReward: number;
+  thumbnailUrl?: string;
   goals: LessonGoal[];
   vocab?: VocabItem[];
   phrases?: Phrase[];

@@ -237,7 +237,7 @@ export default function SignIn() {
           {/* Sign Up Link */}
           <View className="flex-row justify-center mt-8">
             <Text className="text-body-sm font-poppins text-muted">
-              Don't have an account?{" "}
+              {"Don't have an account?"}{" "}
             </Text>
             <TouchableOpacity
               onPress={() => router.replace("/(auth)/sign-up")}

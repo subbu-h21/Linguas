@@ -8,7 +8,7 @@ export const units: Unit[] = [
     title: "Greetings & Basics",
     description: "Say hello, goodbye, and introduce yourself",
     order: 1,
-    totalLessons: 3,
+    totalLessons: 6,
   },
   {
     id: "es-unit-2",
@@ -16,7 +16,7 @@ export const units: Unit[] = [
     title: "Numbers & Colors",
     description: "Count to ten and name common colors",
     order: 2,
-    totalLessons: 2,
+    totalLessons: 5,
   },
 
   // French
@@ -26,7 +26,7 @@ export const units: Unit[] = [
     title: "Greetings & Basics",
     description: "Say hello, goodbye, and introduce yourself",
     order: 1,
-    totalLessons: 2,
+    totalLessons: 6,
   },
 
   // Japanese
@@ -36,7 +36,7 @@ export const units: Unit[] = [
     title: "Greetings & Basics",
     description: "Say hello, goodbye, and introduce yourself",
     order: 1,
-    totalLessons: 2,
+    totalLessons: 6,
   },
 ];
 

@@ -21,7 +21,7 @@ type TabConfig = {
 type TabBarProps = {
   state: {
     index: number;
-    routes: Array<{ key: string; name: string }>;
+    routes: { key: string; name: string }[];
   };
   navigation: {
     emit: (event: {
@@ -59,7 +59,7 @@ export default function CustomTabBar({ state, navigation }: TabBarProps) {
       stiffness: 220,
       mass: 0.8,
     });
-  }, [state.index, tabWidth]);
+  }, [state.index, tabWidth, circleX]);
 
   const circleStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: circleX.value }],
