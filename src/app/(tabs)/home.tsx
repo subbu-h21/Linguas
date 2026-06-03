@@ -3,6 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Image } from "expo-image";
 import { useUser } from "@clerk/expo";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import type { ComponentProps } from "react";
 
 import { useLanguageStore } from "@/store/language-store";
@@ -11,6 +12,7 @@ import { getLanguageById } from "@/data/languages";
 import { getUnitsByLanguage } from "@/data/units";
 import { getLessonsByUnit } from "@/data/lessons";
 import { images, placeholderImages } from "@/constants/images";
+import type { Lesson } from "@/types/learning";
 
 type IoniconName = ComponentProps<typeof Ionicons>["name"];
 
@@ -31,49 +33,58 @@ function getGreeting(languageId: string | null, firstName: string): string {
   return `Hello, ${firstName}!`;
 }
 
-export default function HomeScreen() {
-  const { user } = useUser();
-  const { selectedLanguageId } = useLanguageStore();
-  const { xp, dailyGoalXp, streak, completedLessonIds } = useProgressStore();
+function buildPlanItems(lessons: Lesson[]): PlanItem[] {
+  const firstLesson = lessons.find((l) => l.type === "vocabulary" || l.type === "phrase");
+  const aiLesson = lessons.find((l) => l.type === "ai-teacher");
+  const vocabLesson = lessons.find((l) => l.type === "vocabulary");
 
-  const language = selectedLanguageId ? getLanguageById(selectedLanguageId) : null;
-  const units = selectedLanguageId ? getUnitsByLanguage(selectedLanguageId) : [];
-  const currentUnit = units[0] ?? null;
-  const lessons = currentUnit ? getLessonsByUnit(currentUnit.id) : [];
-
-  const firstName = user?.firstName ?? "Friend";
-  const greeting = getGreeting(selectedLanguageId, firstName);
-  const progressPercent = Math.min((xp / dailyGoalXp) * 100, 100);
-
-  const planItems: PlanItem[] = [
+  return [
     {
-      id: "1",
+      id: "lesson",
       title: "Lesson",
-      subtitle: lessons[0]?.title ?? "Common Greetings",
+      subtitle: firstLesson?.title ?? "Common Greetings",
       icon: "book-outline",
       iconBg: "#EEF2FF",
       iconColor: "#6C4EF5",
-      lessonId: lessons[0]?.id ?? "",
+      lessonId: firstLesson?.id ?? "",
     },
     {
-      id: "2",
+      id: "ai-conversation",
       title: "AI Conversation",
       subtitle: "Talk about your day",
       icon: "headset-outline",
       iconBg: "#EEF2FF",
       iconColor: "#6C4EF5",
-      lessonId: lessons[2]?.id ?? "",
+      lessonId: aiLesson?.id ?? "",
     },
     {
-      id: "3",
+      id: "new-words",
       title: "New words",
-      subtitle: `${lessons[1]?.vocab?.length ?? 10} words`,
+      subtitle: `${vocabLesson?.vocab?.length ?? 10} words`,
       icon: "chatbubble-outline",
       iconBg: "#FFF0F0",
       iconColor: "#FF6B6B",
-      lessonId: lessons[1]?.id ?? "",
+      lessonId: vocabLesson?.id ?? "",
     },
   ];
+}
+
+export default function HomeScreen() {
+  const router = useRouter();
+  const { user } = useUser();
+  const { selectedLanguageId, hasHydrated } = useLanguageStore();
+  const { xp, dailyGoalXp, streak, completedLessonIds } = useProgressStore();
+
+  // Wait for AsyncStorage rehydration before reading persisted language
+  const language = hasHydrated && selectedLanguageId ? getLanguageById(selectedLanguageId) : null;
+  const units = hasHydrated && selectedLanguageId ? getUnitsByLanguage(selectedLanguageId) : [];
+  const currentUnit = units[0] ?? null;
+  const lessons = currentUnit ? getLessonsByUnit(currentUnit.id) : [];
+
+  const firstName = user?.firstName ?? "Friend";
+  const greeting = hasHydrated ? getGreeting(selectedLanguageId, firstName) : `Hello, ${firstName}!`;
+  const progressPercent = Math.min((xp / dailyGoalXp) * 100, 100);
+  const planItems = buildPlanItems(lessons);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#F6F7FB" }} edges={["top"]}>
@@ -103,9 +114,10 @@ export default function HomeScreen() {
                 {streak}
               </Text>
             </View>
-            <TouchableOpacity hitSlop={8}>
+            {/* No notification route yet — non-interactive placeholder */}
+            <View hitSlop={8}>
               <Ionicons name="notifications-outline" size={22} color="#001132" />
-            </TouchableOpacity>
+            </View>
           </View>
         </View>
 
@@ -145,7 +157,10 @@ export default function HomeScreen() {
                 <Text className="text-body-sm font-poppins text-white/85 mb-[18px]">
                   A1 · {currentUnit.title}
                 </Text>
-                <TouchableOpacity style={styles.continueButton}>
+                <TouchableOpacity
+                  style={styles.continueButton}
+                  onPress={() => router.push("/(tabs)/learn")}
+                >
                   <Text className="text-body-md font-poppins-semibold text-primary">
                     Continue
                   </Text>
@@ -163,7 +178,7 @@ export default function HomeScreen() {
         {/* ── Today's Plan ────────────────────────────────────────────────── */}
         <View className="section-header">
           <Text className="section-header__title">{"Today's plan"}</Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push("/(tabs)/learn")}>
             <Text className="section-header__action">View all</Text>
           </TouchableOpacity>
         </View>
@@ -222,7 +237,10 @@ export default function HomeScreen() {
                   contentFit="cover"
                 />
               </View>
-              <TouchableOpacity style={styles.videoButton}>
+              <TouchableOpacity
+                style={styles.videoButton}
+                onPress={() => router.push("/(tabs)/ai-teacher")}
+              >
                 <Ionicons name="videocam" size={22} color="white" />
               </TouchableOpacity>
             </View>
