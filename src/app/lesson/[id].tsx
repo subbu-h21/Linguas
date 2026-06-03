@@ -43,23 +43,36 @@ function ControlButton({
   label,
   onPress,
   variant = "dark",
+  isActive = false,
+  accessibilityLabel,
+  accessibilityState,
 }: {
   icon?: keyof typeof Ionicons.glyphMap;
   label?: string;
   onPress: () => void;
   variant?: "dark" | "danger";
+  isActive?: boolean;
+  accessibilityLabel?: string;
+  accessibilityState?: { selected?: boolean; disabled?: boolean };
 }) {
+  const bgClass =
+    variant === "danger"
+      ? "bg-[#FF4545]"
+      : isActive
+      ? "bg-primary"
+      : "bg-[#1C1E35]";
+
   return (
     <TouchableOpacity
       onPress={onPress}
       activeOpacity={0.75}
-      style={[
-        styles.controlBtn,
-        variant === "danger" ? styles.controlBtnDanger : styles.controlBtnDark,
-      ]}
+      accessibilityLabel={accessibilityLabel}
+      accessibilityRole="button"
+      accessibilityState={accessibilityState}
+      className={`w-[62px] h-[62px] rounded-[18px] items-center justify-center ${bgClass}`}
     >
       {label ? (
-        <Text style={styles.controlBtnLabel}>{label}</Text>
+        <Text className="text-white font-poppins-semibold text-lg">{label}</Text>
       ) : icon ? (
         <Ionicons name={icon} size={22} color="#FFFFFF" />
       ) : null}
@@ -77,12 +90,12 @@ function MetricCard({
   color: string;
 }) {
   return (
-    <View style={styles.metricCard}>
+    <View
+      className="flex-1 bg-white rounded-2xl py-3 px-2.5 items-center border border-[#F0F0F0]"
+      style={styles.metricShadow}
+    >
       <Text className="text-caption font-poppins text-muted mb-1">{label}</Text>
-      <Text
-        className="text-body-sm font-poppins-semibold"
-        style={{ color }}
-      >
+      <Text className="text-body-sm font-poppins-semibold" style={{ color }}>
         {value}
       </Text>
     </View>
@@ -121,6 +134,8 @@ export default function LessonScreen() {
         <TouchableOpacity
           onPress={() => router.back()}
           activeOpacity={0.7}
+          accessibilityLabel="Back"
+          accessibilityRole="button"
           className="mr-3"
         >
           <Ionicons name="chevron-back" size={26} color="#001132" />
@@ -149,39 +164,48 @@ export default function LessonScreen() {
             <Ionicons name="videocam-outline" size={18} color="#6B7280" />
             <Text className="text-caption font-poppins text-muted">12</Text>
           </View>
-          <TouchableOpacity activeOpacity={0.7}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            accessibilityLabel="Notifications"
+            accessibilityRole="button"
+          >
             <Ionicons name="notifications-outline" size={20} color="#001132" />
           </TouchableOpacity>
         </View>
       </View>
 
       {/* ── Teacher area ─────────────────────────────────────────────── */}
-      <View style={styles.teacherArea}>
+      <View className="flex-1 mx-4 rounded-3xl bg-[#E8EAFF] overflow-hidden">
         {/* Mascot as teacher avatar */}
         <Image
           source={images.mascotWelcome}
-          style={styles.mascot}
+          style={{ width: "100%", height: "100%" }}
           contentFit="contain"
         />
 
         {/* User picture-in-picture */}
-        <View style={styles.pip}>
+        <View className="absolute top-3 right-3 w-[72px] h-[88px] rounded-2xl overflow-hidden border-[2.5px] border-white">
           <Image
             source={{ uri: placeholderImages.aiTeacherAvatar }}
-            style={styles.pipImage}
+            style={{ width: "100%", height: "100%" }}
             contentFit="cover"
           />
         </View>
 
         {/* Teacher response bubble */}
-        <View style={styles.bubble}>
-          <Text
-            className="text-body-sm font-poppins text-foreground"
-            style={{ flex: 1 }}
-          >
+        <View
+          className="absolute bottom-3.5 left-3.5 right-3.5 flex-row items-center bg-white rounded-2xl px-3.5 py-3"
+          style={styles.bubbleShadow}
+        >
+          <Text className="text-body-sm font-poppins text-foreground flex-1">
             {teacherMessage}
           </Text>
-          <TouchableOpacity activeOpacity={0.8} style={styles.speakerBtn}>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            accessibilityLabel="Play audio"
+            accessibilityRole="button"
+            className="w-8 h-8 rounded-full bg-primary items-center justify-center ml-3 shrink-0"
+          >
             <Ionicons name="volume-high" size={14} color="#FFFFFF" />
           </TouchableOpacity>
         </View>
@@ -197,19 +221,29 @@ export default function LessonScreen() {
 
       {/* ── Controls ─────────────────────────────────────────────────── */}
       <View className="flex-row justify-center gap-4 mt-5 px-6">
-        <ControlButton icon="videocam-off" onPress={() => {}} />
+        <ControlButton
+          icon="videocam-off"
+          onPress={() => {}}
+          accessibilityLabel="Camera off"
+        />
         <ControlButton
           icon={micOn ? "mic" : "mic-off"}
           onPress={() => setMicOn(!micOn)}
+          accessibilityLabel="Toggle microphone"
+          accessibilityState={{ selected: micOn }}
         />
         <ControlButton
           label="Aá"
           onPress={() => setSubtitlesOn(!subtitlesOn)}
+          isActive={subtitlesOn}
+          accessibilityLabel="Toggle subtitles"
+          accessibilityState={{ selected: subtitlesOn }}
         />
         <ControlButton
           icon="call"
           onPress={() => router.back()}
           variant="danger"
+          accessibilityLabel="Hang up"
         />
       </View>
 
@@ -223,96 +257,24 @@ export default function LessonScreen() {
   );
 }
 
+// Only shadows and SafeAreaView remain here — everything else is NativeWind
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: "#FFFFFF",
   },
-  teacherArea: {
-    flex: 1,
-    marginHorizontal: 16,
-    borderRadius: 24,
-    backgroundColor: "#E8EAFF",
-    overflow: "hidden",
-    position: "relative",
-  },
-  mascot: {
-    width: "100%",
-    height: "100%",
-  },
-  pip: {
-    position: "absolute",
-    top: 12,
-    right: 12,
-    width: 72,
-    height: 88,
-    borderRadius: 16,
-    overflow: "hidden",
-    borderWidth: 2.5,
-    borderColor: "#FFFFFF",
-  },
-  pipImage: {
-    width: "100%",
-    height: "100%",
-  },
-  bubble: {
-    position: "absolute",
-    bottom: 14,
-    left: 14,
-    right: 14,
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#FFFFFF",
-    borderRadius: 16,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+  bubbleShadow: {
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
     shadowRadius: 8,
     elevation: 3,
   },
-  speakerBtn: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: "#6C4EF5",
-    alignItems: "center",
-    justifyContent: "center",
-    marginLeft: 12,
-    flexShrink: 0,
-  },
-  controlBtn: {
-    width: 62,
-    height: 62,
-    borderRadius: 18,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  controlBtnDark: {
-    backgroundColor: "#1C1E35",
-  },
-  controlBtnDanger: {
-    backgroundColor: "#FF4545",
-  },
-  controlBtnLabel: {
-    color: "#FFFFFF",
-    fontFamily: "Poppins-SemiBold",
-    fontSize: 18,
-  },
-  metricCard: {
-    flex: 1,
-    backgroundColor: "#FFFFFF",
-    borderRadius: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 10,
-    alignItems: "center",
+  metricShadow: {
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 1,
-    borderWidth: 1,
-    borderColor: "#F0F0F0",
   },
 });
