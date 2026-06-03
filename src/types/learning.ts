@@ -1,4 +1,4 @@
-export type LessonType = "vocabulary" | "phrase" | "ai-teacher" | "quiz";
+export type LessonType = "vocabulary" | "phrase" | "ai-teacher";
 
 export type ActivityType =
   | "multiple-choice"

@@ -40,7 +40,7 @@ export default function LanguageSelection() {
           style={styles.backBtn}
           activeOpacity={0.7}
         >
-          <Text style={styles.backArrow}>‹</Text>
+          <Text className="text-[28px] text-foreground leading-9">‹</Text>
         </TouchableOpacity>
         <Text className="flex-1 text-center text-h4 font-poppins-semibold text-foreground">
           Choose a language
@@ -50,8 +50,8 @@ export default function LanguageSelection() {
 
       {/* Search */}
       <View className="px-5 mb-5">
-        <View style={styles.searchRow}>
-          <Text style={styles.searchIcon}>🔍</Text>
+        <View className="flex-row items-center bg-[#F6F7FB] rounded-xl px-3.5 py-[11px] gap-2">
+          <Text className="text-[15px]">🔍</Text>
           <TextInput
             style={styles.searchInput}
             placeholder="Search languages"
@@ -80,7 +80,7 @@ export default function LanguageSelection() {
             onSelect={() => setSelectedId(item.id)}
           />
         )}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
+        ItemSeparatorComponent={() => <View className="h-3" />}
         showsVerticalScrollIndicator={false}
       />
 
@@ -98,7 +98,7 @@ export default function LanguageSelection() {
       {/* Earth illustration */}
       <Image
         source={images.earth}
-        style={styles.earth}
+        className="w-[80%] h-[120px] self-center"
         resizeMode="cover"
       />
     </SafeAreaView>
@@ -122,7 +122,7 @@ function LanguageRow({
     >
       <Image
         source={{ uri: language.flag }}
-        style={styles.flag}
+        className="w-11 h-11 rounded-full bg-[#F6F7FB]"
         resizeMode="cover"
       />
       <View className="flex-1 ml-3">
@@ -134,44 +134,30 @@ function LanguageRow({
         </Text>
       </View>
       {isSelected ? (
-        <View style={styles.checkCircle}>
-          <Text style={styles.checkText}>✓</Text>
+        <View className="w-7 h-7 rounded-full bg-[#4D88FF] items-center justify-center">
+          <Text className="text-white text-sm font-bold">✓</Text>
         </View>
       ) : (
-        <Text style={styles.chevron}>›</Text>
+        <Text className="text-[22px] text-muted leading-7">›</Text>
       )}
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
+  // SafeAreaView — className not supported
   container: {
     flex: 1,
     backgroundColor: "#FFFFFF",
   },
+  // TouchableOpacity — exception per style rules
   backBtn: {
     width: 36,
     height: 36,
     alignItems: "center",
     justifyContent: "center",
   },
-  backArrow: {
-    fontSize: 28,
-    color: "#001132",
-    lineHeight: 36,
-  },
-  searchRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#F6F7FB",
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 11,
-    gap: 8,
-  },
-  searchIcon: {
-    fontSize: 15,
-  },
+  // TextInput — exception per style rules
   searchInput: {
     flex: 1,
     fontSize: 14,
@@ -179,13 +165,12 @@ const styles = StyleSheet.create({
     color: "#001132",
     padding: 0,
   },
+  // FlatList contentContainerStyle — exception per style rules
   listContent: {
     paddingHorizontal: 20,
     paddingBottom: 8,
   },
-  separator: {
-    height: 12,
-  },
+  // TouchableOpacity with conditional selected state — exception per style rules
   langRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -198,34 +183,5 @@ const styles = StyleSheet.create({
   langRowSelected: {
     borderColor: "#6C4EF5",
     backgroundColor: "#F5F2FF",
-  },
-  flag: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: "#F6F7FB",
-  },
-  checkCircle: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: "#4D88FF",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  checkText: {
-    color: "#FFFFFF",
-    fontSize: 14,
-    fontWeight: "700",
-  },
-  chevron: {
-    fontSize: 22,
-    color: "#6B7280",
-    lineHeight: 28,
-  },
-  earth: {
-    width: "80%",
-    height: 120,
-    alignSelf: "center",
   },
 });
