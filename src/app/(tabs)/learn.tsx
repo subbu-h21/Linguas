@@ -21,6 +21,82 @@ function getLessonTypeIcon(type: Lesson["type"]) {
   return "book-outline";
 }
 
+// ── LessonRow ─────────────────────────────────────────────────────────────────
+
+type LessonRowProps = {
+  lesson: Lesson;
+  status: LessonStatus;
+  showDivider: boolean;
+  onPress: () => void;
+};
+
+function LessonRow({ lesson, status, showDivider, onPress }: LessonRowProps) {
+  const isInProgress = status === "in-progress";
+  const isCompleted = status === "completed";
+  const isLocked = status === "not-started";
+
+  return (
+    <View>
+      {showDivider && <View className="divider mx-4" />}
+      <TouchableOpacity
+        style={[styles.lessonRow, isInProgress && styles.lessonRowActive]}
+        activeOpacity={isLocked ? 1 : 0.7}
+        onPress={isLocked ? undefined : onPress}
+      >
+        {/* Left: lesson info */}
+        <View className="flex-1 pr-3">
+          <View className="row gap-1.5 mb-0.5">
+            <Ionicons
+              name={getLessonTypeIcon(lesson.type)}
+              size={11}
+              color="#9CA3AF"
+            />
+            <Text className="text-caption font-poppins text-muted">
+              Lesson {lesson.order}
+            </Text>
+          </View>
+          <Text className="text-body-md font-poppins-semibold text-foreground">
+            {lesson.title}
+          </Text>
+          {isInProgress ? (
+            <View className="self-start rounded-full px-2.5 py-0.5 mt-1.5 bg-[#EEF0FE]">
+              <Text className="text-caption font-poppins-semibold text-primary">
+                In progress
+              </Text>
+            </View>
+          ) : (
+            <Text className="text-caption font-poppins text-muted mt-0.5">
+              {lesson.xpReward} XP
+              {lesson.activities.length > 0
+                ? ` • ${lesson.activities.length} activities`
+                : ""}
+            </Text>
+          )}
+        </View>
+
+        {/* Right: status indicator */}
+        {isCompleted && (
+          <Ionicons name="checkmark-circle" size={34} color="#21C16B" />
+        )}
+        {isInProgress && (
+          <Image
+            source={{ uri: lesson.thumbnailUrl }}
+            style={styles.thumbnail}
+            contentFit="cover"
+          />
+        )}
+        {isLocked && (
+          <View style={styles.lockBubble}>
+            <Ionicons name="lock-closed" size={13} color="#9CA3AF" />
+          </View>
+        )}
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+// ── Screen ────────────────────────────────────────────────────────────────────
+
 export default function LearnScreen() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<"lessons" | "practice">("lessons");
@@ -43,13 +119,12 @@ export default function LearnScreen() {
     completedLessonIds.includes(l.id)
   ).length;
 
-  // First lesson not yet completed is the "in progress" one
   const inProgressId =
     lessons.find((l) => !completedLessonIds.includes(l.id))?.id ?? null;
 
-  function getStatus(lessonId: string): LessonStatus {
+  function getStatus(lessonId: string, unitInProgressId: string | null): LessonStatus {
     if (completedLessonIds.includes(lessonId)) return "completed";
-    if (lessonId === inProgressId) return "in-progress";
+    if (lessonId === unitInProgressId) return "in-progress";
     return "not-started";
   }
 
@@ -96,10 +171,7 @@ export default function LearnScreen() {
           <View className="flex-row items-end">
             <View className="flex-1 p-5 pb-3">
               {/* Unit badge */}
-              <View
-                className="self-start rounded-full px-3 py-1 mb-2"
-                style={{ backgroundColor: "rgba(108,78,245,0.12)" }}
-              >
+              <View className="self-start rounded-full px-3 py-1 mb-2 bg-primary/10">
                 <Text className="text-caption font-poppins-semibold text-primary uppercase tracking-widest">
                   Unit {currentUnit.order}
                 </Text>
@@ -114,7 +186,7 @@ export default function LearnScreen() {
 
               {/* Progress */}
               <View className="row gap-2 mt-3">
-                <View className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: "rgba(108,78,245,0.15)" }}>
+                <View className="flex-1 h-1.5 rounded-full overflow-hidden bg-primary/10">
                   <View
                     className="h-full bg-primary rounded-full"
                     style={{ width: `${progressPercent}%` as `${number}%` }}
@@ -173,92 +245,15 @@ export default function LearnScreen() {
 
           {activeTab === "lessons" ? (
             <>
-              {lessons.map((lesson, index) => {
-                const status = getStatus(lesson.id);
-                const isInProgress = status === "in-progress";
-                const isCompleted = status === "completed";
-
-                return (
-                  <View key={lesson.id}>
-                    {index > 0 && <View className="divider mx-4" />}
-
-                    <TouchableOpacity
-                      style={[
-                        styles.lessonRow,
-                        isInProgress && styles.lessonRowActive,
-                      ]}
-                      activeOpacity={0.7}
-                      onPress={() => router.push(`/lesson/${lesson.id}`)}
-                    >
-                      {/* Left: lesson info */}
-                      <View className="flex-1 pr-3">
-                        {/* Lesson number + type icon */}
-                        <View className="row gap-1.5 mb-0.5">
-                          <Ionicons
-                            name={getLessonTypeIcon(lesson.type)}
-                            size={11}
-                            color="#9CA3AF"
-                          />
-                          <Text className="text-caption font-poppins text-muted">
-                            Lesson {lesson.order}
-                          </Text>
-                        </View>
-
-                        <Text className="text-body-md font-poppins-semibold text-foreground">
-                          {lesson.title}
-                        </Text>
-
-                        {isInProgress ? (
-                          /* In-progress badge */
-                          <View
-                            className="self-start rounded-full px-2.5 py-0.5 mt-1.5"
-                            style={{ backgroundColor: "#EEF0FE" }}
-                          >
-                            <Text className="text-caption font-poppins-semibold text-primary">
-                              In progress
-                            </Text>
-                          </View>
-                        ) : (
-                          /* XP info */
-                          <Text className="text-caption font-poppins text-muted mt-0.5">
-                            {lesson.xpReward} XP
-                            {lesson.activities.length > 0
-                              ? ` • ${lesson.activities.length} activities`
-                              : ""}
-                          </Text>
-                        )}
-                      </View>
-
-                      {/* Right: status indicator */}
-                      {isCompleted && (
-                        <Ionicons
-                          name="checkmark-circle"
-                          size={34}
-                          color="#21C16B"
-                        />
-                      )}
-
-                      {isInProgress && (
-                        <Image
-                          source={{ uri: lesson.thumbnailUrl }}
-                          style={styles.thumbnail}
-                          contentFit="cover"
-                        />
-                      )}
-
-                      {status === "not-started" && (
-                        <View style={styles.lockBubble}>
-                          <Ionicons
-                            name="lock-closed"
-                            size={13}
-                            color="#9CA3AF"
-                          />
-                        </View>
-                      )}
-                    </TouchableOpacity>
-                  </View>
-                );
-              })}
+              {lessons.map((lesson, index) => (
+                <LessonRow
+                  key={lesson.id}
+                  lesson={lesson}
+                  status={getStatus(lesson.id, inProgressId)}
+                  showDivider={index > 0}
+                  onPress={() => router.push(`/lesson/${lesson.id}`)}
+                />
+              ))}
             </>
           ) : (
             /* Practice tab — placeholder */
@@ -280,6 +275,8 @@ export default function LearnScreen() {
           const unitCompleted = unitLessons.filter((l) =>
             completedLessonIds.includes(l.id)
           ).length;
+          const unitInProgressId =
+            unitLessons.find((l) => !completedLessonIds.includes(l.id))?.id ?? null;
 
           return (
             <View
@@ -302,75 +299,15 @@ export default function LearnScreen() {
                 </Text>
               </View>
 
-              {unitLessons.map((lesson, index) => {
-                const status = getStatus(lesson.id);
-                const isInProgress = status === "in-progress";
-                const isCompleted = status === "completed";
-
-                return (
-                  <View key={lesson.id}>
-                    {index > 0 && <View className="divider mx-4" />}
-
-                    <TouchableOpacity
-                      style={[
-                        styles.lessonRow,
-                        isInProgress && styles.lessonRowActive,
-                      ]}
-                      activeOpacity={0.7}
-                      onPress={() => router.push(`/lesson/${lesson.id}`)}
-                    >
-                      <View className="flex-1 pr-3">
-                        <View className="row gap-1.5 mb-0.5">
-                          <Ionicons
-                            name={getLessonTypeIcon(lesson.type)}
-                            size={11}
-                            color="#9CA3AF"
-                          />
-                          <Text className="text-caption font-poppins text-muted">
-                            Lesson {lesson.order}
-                          </Text>
-                        </View>
-                        <Text className="text-body-md font-poppins-semibold text-foreground">
-                          {lesson.title}
-                        </Text>
-                        {isInProgress ? (
-                          <View
-                            className="self-start rounded-full px-2.5 py-0.5 mt-1.5"
-                            style={{ backgroundColor: "#EEF0FE" }}
-                          >
-                            <Text className="text-caption font-poppins-semibold text-primary">
-                              In progress
-                            </Text>
-                          </View>
-                        ) : (
-                          <Text className="text-caption font-poppins text-muted mt-0.5">
-                            {lesson.xpReward} XP
-                            {lesson.activities.length > 0
-                              ? ` • ${lesson.activities.length} activities`
-                              : ""}
-                          </Text>
-                        )}
-                      </View>
-
-                      {isCompleted && (
-                        <Ionicons name="checkmark-circle" size={34} color="#21C16B" />
-                      )}
-                      {isInProgress && (
-                        <Image
-                          source={{ uri: lesson.thumbnailUrl }}
-                          style={styles.thumbnail}
-                          contentFit="cover"
-                        />
-                      )}
-                      {status === "not-started" && (
-                        <View style={styles.lockBubble}>
-                          <Ionicons name="lock-closed" size={13} color="#9CA3AF" />
-                        </View>
-                      )}
-                    </TouchableOpacity>
-                  </View>
-                );
-              })}
+              {unitLessons.map((lesson, index) => (
+                <LessonRow
+                  key={lesson.id}
+                  lesson={lesson}
+                  status={getStatus(lesson.id, unitInProgressId)}
+                  showDivider={index > 0}
+                  onPress={() => router.push(`/lesson/${lesson.id}`)}
+                />
+              ))}
             </View>
           );
         })}

@@ -1,11 +1,6 @@
 import { useState } from "react";
-import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -95,7 +90,7 @@ export default function LessonScreen() {
 
   if (!lesson) {
     return (
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={styles.safeArea} edges={["top", "bottom"]}>
         <View className="flex-1 items-center justify-center">
           <Text className="text-body-md font-poppins text-muted">
             Lesson not found.
@@ -109,7 +104,7 @@ export default function LessonScreen() {
   const goalText = lesson.goals[0]?.description ?? lesson.description;
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea} edges={["top", "bottom"]}>
       {/* ── Header ───────────────────────────────────────────────────── */}
       <View className="flex-row items-center px-5 pt-2 pb-3">
         <TouchableOpacity
