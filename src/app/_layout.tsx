@@ -39,6 +39,10 @@ export default function RootLayout() {
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="onboarding" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="language-selection"
+          options={{ headerShown: false }}
+        />
       </Stack>
     </ClerkProvider>
   );
