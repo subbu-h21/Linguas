@@ -11,9 +11,20 @@ import type { Lesson } from "@/types/learning";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
+const GREETINGS: Record<string, { hello: string; begin: string }> = {
+  es: { hello: "¡Hola!", begin: "¡Muy bien! Let's begin the lesson 👏" },
+  fr: { hello: "Bonjour!", begin: "Très bien! Let's begin the lesson 👏" },
+  ja: { hello: "こんにちは!", begin: "よし！Let's begin the lesson 👏" },
+};
+
 function buildTeacherMessage(lesson: Lesson): string {
+  const { hello, begin } = GREETINGS[lesson.languageId] ?? {
+    hello: "Hello!",
+    begin: "Great! Let's begin the lesson 👏",
+  };
+
   if (lesson.aiTeacherPrompt) {
-    return `¡Hola! Ready to practice ${lesson.aiTeacherPrompt.lessonTopic}? 👋`;
+    return `${hello} Ready to practice ${lesson.aiTeacherPrompt.lessonTopic}? 👋`;
   }
   if (lesson.vocab?.[0]) {
     const v = lesson.vocab[0];
@@ -22,7 +33,7 @@ function buildTeacherMessage(lesson: Lesson): string {
   if (lesson.phrases?.[0]) {
     return `Try saying: "${lesson.phrases[0].phrase}"`;
   }
-  return "¡Muy bien! Let's begin the lesson 👏";
+  return begin;
 }
 
 // ── Sub-components ────────────────────────────────────────────────────────────
