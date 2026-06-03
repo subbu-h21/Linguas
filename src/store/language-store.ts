@@ -26,8 +26,11 @@ export const useLanguageStore = create<LanguageState>()(
       partialize: (state) => ({
         selectedLanguageId: state.selectedLanguageId,
       }),
-      onRehydrateStorage: () => (state) => {
-        state?.setHasHydrated(true);
+      onRehydrateStorage: () => (state, error) => {
+        if (error) {
+          console.error("Language store rehydration failed:", error);
+        }
+        (state ?? useLanguageStore.getState()).setHasHydrated(true);
       },
     }
   )
