@@ -6,6 +6,7 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import { PostHogProvider } from "posthog-react-native";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -14,6 +15,9 @@ const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 if (!publishableKey) {
   throw new Error("Add EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY to your .env file");
 }
+
+const posthogApiKey = process.env.EXPO_PUBLIC_POSTHOG_API_KEY;
+const posthogHost = process.env.EXPO_PUBLIC_POSTHOG_HOST;
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -33,7 +37,7 @@ export default function RootLayout() {
     return null;
   }
 
-  return (
+  const app = (
     <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
@@ -43,5 +47,15 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack>
     </ClerkProvider>
+  );
+
+  if (!posthogApiKey) {
+    return app;
+  }
+
+  return (
+    <PostHogProvider apiKey={posthogApiKey} options={{ host: posthogHost }}>
+      {app}
+    </PostHogProvider>
   );
 }
