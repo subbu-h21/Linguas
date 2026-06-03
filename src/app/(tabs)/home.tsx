@@ -84,10 +84,10 @@ export default function HomeScreen() {
         {/* ── Header ─────────────────────────────────────────────────────── */}
         <View className="row--between mb-5">
           <View className="row gap-3">
-            <View style={styles.flagContainer}>
+            <View className="w-[38px] h-[38px] rounded-full overflow-hidden">
               <Image
                 source={{ uri: language?.flag ?? "https://flagcdn.com/w160/us.png" }}
-                style={styles.flagImage}
+                style={{ width: 38, height: 38 }}
                 contentFit="cover"
               />
             </View>
@@ -111,38 +111,49 @@ export default function HomeScreen() {
 
         {/* ── Daily Goal Card ─────────────────────────────────────────────── */}
         <View className="bg-background rounded-2xl p-4 mb-4 row--between" style={styles.shadow}>
-          <View style={styles.dailyGoalContent}>
+          <View className="flex-1 pr-3">
             <Text className="text-caption font-poppins text-muted mb-1">Daily goal</Text>
             <View className="row items-baseline gap-1 mb-3">
               <Text className="text-h2 font-poppins-bold text-foreground">{xp}</Text>
               <Text className="text-body-md font-poppins text-muted">/ {dailyGoalXp} XP</Text>
             </View>
-            <View style={styles.progressTrack}>
-              <View style={[styles.progressFill, { width: `${progressPercent}%` as `${number}%` }]} />
+            <View className="h-2 rounded overflow-hidden bg-[#F0EFFE]">
+              <View
+                className="h-2 bg-streak rounded"
+                style={{ width: `${progressPercent}%` as `${number}%` }}
+              />
             </View>
           </View>
           <Image
             source={images.treasure}
-            style={styles.treasureImage}
+            style={{ width: 90, height: 90 }}
             contentFit="contain"
           />
         </View>
 
         {/* ── Continue Learning Card ──────────────────────────────────────── */}
         {language && currentUnit && (
-          <View style={styles.continueCard} className="mb-5">
-            <View style={styles.continueCardInner}>
-              <View style={styles.continueCardContent}>
-                <Text style={styles.continueLabelText}>Continue learning</Text>
-                <Text style={styles.continueLanguageText}>{language.name}</Text>
-                <Text style={styles.continueUnitText}>A1 · {currentUnit.title}</Text>
+          <View className="rounded-[20px] overflow-hidden bg-primary mb-5 min-h-[160px]">
+            <View className="flex-row">
+              <View className="flex-1 p-5 pr-2">
+                <Text className="text-caption font-poppins text-white/75 mb-1">
+                  Continue learning
+                </Text>
+                <Text className="text-[26px] font-poppins-bold text-white mb-0.5">
+                  {language.name}
+                </Text>
+                <Text className="text-body-sm font-poppins text-white/85 mb-[18px]">
+                  A1 · {currentUnit.title}
+                </Text>
                 <TouchableOpacity style={styles.continueButton}>
-                  <Text style={styles.continueButtonText}>Continue</Text>
+                  <Text className="text-body-md font-poppins-semibold text-primary">
+                    Continue
+                  </Text>
                 </TouchableOpacity>
               </View>
               <Image
                 source={images.palace}
-                style={styles.continueImage}
+                style={{ width: 120, height: 175, alignSelf: "flex-end" }}
                 contentFit="contain"
               />
             </View>
@@ -165,7 +176,8 @@ export default function HomeScreen() {
                 <View className="row--between px-4 py-3">
                   <View className="row gap-3 flex-1">
                     <View
-                      style={[styles.planIconBox, { backgroundColor: item.iconBg }]}
+                      className="w-11 h-11 rounded-xl items-center justify-center"
+                      style={{ backgroundColor: item.iconBg }}
                     >
                       <Ionicons name={item.icon} size={20} color={item.iconColor} />
                     </View>
@@ -181,7 +193,7 @@ export default function HomeScreen() {
                   {completed ? (
                     <Ionicons name="checkmark-circle" size={22} color="#21C16B" />
                   ) : (
-                    <View style={styles.emptyCircle} />
+                    <View className="w-[22px] h-[22px] rounded-full border-2 border-border" />
                   )}
                 </View>
                 {index < planItems.length - 1 && (
@@ -193,7 +205,7 @@ export default function HomeScreen() {
         </View>
 
         {/* ── Next Up Card ────────────────────────────────────────────────── */}
-        <View style={styles.nextUpCard}>
+        <View className="rounded-2xl p-4 border border-[#D1F5E3] bg-[#F0FBF5]">
           <View className="row--between">
             <View className="flex-1">
               <Text className="text-caption font-poppins text-muted">Next up</Text>
@@ -203,10 +215,10 @@ export default function HomeScreen() {
               <Text className="text-caption font-poppins text-muted">Practice speaking</Text>
             </View>
             <View className="row gap-3 items-center">
-              <View style={styles.avatarContainer}>
+              <View className="w-[50px] h-[50px] rounded-full overflow-hidden">
                 <Image
                   source={{ uri: placeholderImages.aiTeacherAvatar }}
-                  style={styles.avatarImage}
+                  style={{ width: 50, height: 50 }}
                   contentFit="cover"
                 />
               </View>
@@ -222,11 +234,13 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+  // ScrollView contentContainerStyle — must use StyleSheet (exception rule)
   scrollContent: {
     paddingHorizontal: 20,
     paddingTop: 16,
     paddingBottom: 110,
   },
+  // iOS/Android shadow — platform-specific syntax (exception rule)
   shadow: {
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -234,67 +248,7 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 2,
   },
-  flagContainer: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    overflow: "hidden",
-  },
-  flagImage: {
-    width: 38,
-    height: 38,
-  },
-  dailyGoalContent: {
-    flex: 1,
-    paddingRight: 12,
-  },
-  progressTrack: {
-    height: 8,
-    backgroundColor: "#F0EFFE",
-    borderRadius: 4,
-    overflow: "hidden",
-  },
-  progressFill: {
-    height: 8,
-    backgroundColor: "#FF8A00",
-    borderRadius: 4,
-  },
-  treasureImage: {
-    width: 90,
-    height: 90,
-  },
-  continueCard: {
-    backgroundColor: "#6C4EF5",
-    borderRadius: 20,
-    overflow: "hidden",
-    minHeight: 160,
-  },
-  continueCardInner: {
-    flexDirection: "row",
-  },
-  continueCardContent: {
-    flex: 1,
-    padding: 20,
-    paddingRight: 8,
-  },
-  continueLabelText: {
-    fontFamily: "Poppins-Regular",
-    fontSize: 12,
-    color: "rgba(255,255,255,0.75)",
-    marginBottom: 4,
-  },
-  continueLanguageText: {
-    fontFamily: "Poppins-Bold",
-    fontSize: 26,
-    color: "#FFFFFF",
-    marginBottom: 2,
-  },
-  continueUnitText: {
-    fontFamily: "Poppins-Regular",
-    fontSize: 13,
-    color: "rgba(255,255,255,0.85)",
-    marginBottom: 18,
-  },
+  // TouchableOpacity style prop (exception rule)
   continueButton: {
     backgroundColor: "#FFFFFF",
     borderRadius: 24,
@@ -302,47 +256,7 @@ const styles = StyleSheet.create({
     paddingVertical: 9,
     alignSelf: "flex-start",
   },
-  continueButtonText: {
-    fontFamily: "Poppins-SemiBold",
-    fontSize: 14,
-    color: "#6C4EF5",
-  },
-  continueImage: {
-    width: 120,
-    height: 175,
-    alignSelf: "flex-end",
-  },
-  planIconBox: {
-    width: 44,
-    height: 44,
-    borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  emptyCircle: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    borderWidth: 2,
-    borderColor: "#E5E7EB",
-  },
-  nextUpCard: {
-    backgroundColor: "#F0FBF5",
-    borderRadius: 16,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: "#D1F5E3",
-  },
-  avatarContainer: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    overflow: "hidden",
-  },
-  avatarImage: {
-    width: 50,
-    height: 50,
-  },
+  // TouchableOpacity style prop (exception rule)
   videoButton: {
     width: 50,
     height: 50,
