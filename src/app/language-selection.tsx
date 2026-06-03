@@ -37,7 +37,7 @@ export default function LanguageSelection() {
       <View className="flex-row items-center px-5 pt-2 pb-4">
         <TouchableOpacity
           onPress={() => router.back()}
-          style={styles.backBtn}
+          className="w-9 h-9 items-center justify-center"
           activeOpacity={0.7}
         >
           <Text className="text-[28px] text-foreground leading-9">‹</Text>
@@ -45,7 +45,7 @@ export default function LanguageSelection() {
         <Text className="flex-1 text-center text-h4 font-poppins-semibold text-foreground">
           Choose a language
         </Text>
-        <View style={styles.backBtn} />
+        <View className="w-9 h-9" />
       </View>
 
       {/* Search */}
@@ -53,7 +53,7 @@ export default function LanguageSelection() {
         <View className="flex-row items-center bg-[#F6F7FB] rounded-xl px-3.5 py-[11px] gap-2">
           <Text className="text-[15px]">🔍</Text>
           <TextInput
-            style={styles.searchInput}
+            className="flex-1 text-sm font-poppins text-foreground p-0"
             placeholder="Search languages"
             placeholderTextColor="#6B7280"
             value={search}
@@ -118,7 +118,7 @@ function LanguageRow({
     <TouchableOpacity
       onPress={onSelect}
       activeOpacity={0.75}
-      style={[styles.langRow, isSelected && styles.langRowSelected]}
+      className={`flex-row items-center p-4 rounded-2xl border-[1.5px] ${isSelected ? "border-[#6C4EF5] bg-[#F5F2FF]" : "border-[#E5E7EB] bg-white"}`}
     >
       <Image
         source={{ uri: language.flag }}
@@ -145,43 +145,12 @@ function LanguageRow({
 }
 
 const styles = StyleSheet.create({
-  // SafeAreaView — className not supported
   container: {
     flex: 1,
     backgroundColor: "#FFFFFF",
   },
-  // TouchableOpacity — exception per style rules
-  backBtn: {
-    width: 36,
-    height: 36,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  // TextInput — exception per style rules
-  searchInput: {
-    flex: 1,
-    fontSize: 14,
-    fontFamily: "Poppins-Regular",
-    color: "#001132",
-    padding: 0,
-  },
-  // FlatList contentContainerStyle — exception per style rules
   listContent: {
     paddingHorizontal: 20,
     paddingBottom: 8,
-  },
-  // TouchableOpacity with conditional selected state — exception per style rules
-  langRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 16,
-    borderRadius: 16,
-    borderWidth: 1.5,
-    borderColor: "#E5E7EB",
-    backgroundColor: "#FFFFFF",
-  },
-  langRowSelected: {
-    borderColor: "#6C4EF5",
-    backgroundColor: "#F5F2FF",
   },
 });
