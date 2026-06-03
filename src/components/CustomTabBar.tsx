@@ -94,6 +94,9 @@ export default function CustomTabBar({ state, navigation }: TabBarProps) {
               onPress={onPress}
               style={styles.tab}
               activeOpacity={0.75}
+              accessibilityRole="button"
+              accessibilityLabel={`${tab.label} tab`}
+              accessibilityState={{ selected: isActive }}
             >
               {/* Icon area — same height as circle for vertical alignment */}
               <View style={styles.iconSlot}>
