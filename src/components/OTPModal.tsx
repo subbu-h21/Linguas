@@ -36,16 +36,20 @@ export default function OTPModal({
   // Clear code and refocus when an error is set
   useEffect(() => {
     if (error) {
-      setCode("");
-      setTimeout(() => inputRef.current?.focus(), 100);
+      setTimeout(() => {
+        setCode("");
+        inputRef.current?.focus();
+      }, 100);
     }
   }, [error]);
 
   // Reset state when modal closes
   useEffect(() => {
     if (!visible) {
-      setCode("");
-      setIsVerifying(false);
+      setTimeout(() => {
+        setCode("");
+        setIsVerifying(false);
+      }, 0);
     }
   }, [visible]);
 
@@ -156,7 +160,7 @@ export default function OTPModal({
                   activeOpacity={0.7}
                 >
                   <Text className="text-body-sm font-poppins text-muted text-center">
-                    Didn't receive a code?{" "}
+                    {"Didn't receive a code?"}{" "}
                     <Text className="font-poppins-semibold text-primary">
                       Resend
                     </Text>
