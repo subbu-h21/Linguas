@@ -11,6 +11,9 @@ import type { Lesson } from "@/types/learning";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
+// Viewer count shown in the header — placeholder until real session data exists
+const VIDEO_VIEWER_COUNT = 12;
+
 const GREETINGS: Record<string, { hello: string; begin: string }> = {
   es: { hello: "¡Hola!", begin: "¡Muy bien! Let's begin the lesson 👏" },
   fr: { hello: "Bonjour!", begin: "Très bien! Let's begin the lesson 👏" },
@@ -110,6 +113,7 @@ export default function LessonScreen() {
   const lesson = getLessonById(id);
 
   const [micOn, setMicOn] = useState(true);
+  const [cameraOn, setCameraOn] = useState(false);
   const [subtitlesOn, setSubtitlesOn] = useState(false);
 
   if (!lesson) {
@@ -162,10 +166,11 @@ export default function LessonScreen() {
         <View className="flex-row items-center gap-3">
           <View className="flex-row items-center gap-1">
             <Ionicons name="videocam-outline" size={18} color="#6B7280" />
-            <Text className="text-caption font-poppins text-muted">12</Text>
+            <Text className="text-caption font-poppins text-muted">{VIDEO_VIEWER_COUNT}</Text>
           </View>
           <TouchableOpacity
-            activeOpacity={0.7}
+            disabled
+            activeOpacity={1}
             accessibilityLabel="Notifications"
             accessibilityRole="button"
           >
@@ -201,7 +206,8 @@ export default function LessonScreen() {
             {teacherMessage}
           </Text>
           <TouchableOpacity
-            activeOpacity={0.8}
+            disabled
+            activeOpacity={1}
             accessibilityLabel="Play audio"
             accessibilityRole="button"
             className="w-8 h-8 rounded-full bg-primary items-center justify-center ml-3 shrink-0"
@@ -222,9 +228,10 @@ export default function LessonScreen() {
       {/* ── Controls ─────────────────────────────────────────────────── */}
       <View className="flex-row justify-center gap-4 mt-5 px-6">
         <ControlButton
-          icon="videocam-off"
-          onPress={() => {}}
-          accessibilityLabel="Camera off"
+          icon={cameraOn ? "videocam" : "videocam-off"}
+          onPress={() => setCameraOn(!cameraOn)}
+          accessibilityLabel={cameraOn ? "Turn camera off" : "Turn camera on"}
+          accessibilityState={{ selected: cameraOn }}
         />
         <ControlButton
           icon={micOn ? "mic" : "mic-off"}
