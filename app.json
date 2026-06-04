@@ -17,10 +17,11 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.anonymous.duolingo_clone"
     },
     "web": {
-      "output": "static",
+      "output": "server",
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
@@ -37,7 +38,19 @@
       ],
       "@clerk/expo",
       "expo-secure-store",
-      "expo-localization"
+      "expo-localization",
+      "@stream-io/video-react-native-sdk",
+      [
+        "@config-plugins/react-native-webrtc",
+        {
+          "cameraPermission": "$(PRODUCT_NAME) needs camera access for video lessons",
+          "microphonePermission": "$(PRODUCT_NAME) needs microphone access for audio lessons"
+        }
+      ],
+      [
+        "expo-build-properties",
+        { "android": { "minSdkVersion": 24 } }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
