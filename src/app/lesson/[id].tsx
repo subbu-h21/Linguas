@@ -173,6 +173,7 @@ export default function LessonScreen() {
             activeOpacity={1}
             accessibilityLabel="Notifications"
             accessibilityRole="button"
+            accessibilityState={{ disabled: true }}
           >
             <Ionicons name="notifications-outline" size={20} color="#001132" />
           </TouchableOpacity>
@@ -210,6 +211,7 @@ export default function LessonScreen() {
             activeOpacity={1}
             accessibilityLabel="Play audio"
             accessibilityRole="button"
+            accessibilityState={{ disabled: true }}
             className="w-8 h-8 rounded-full bg-primary items-center justify-center ml-3 shrink-0"
           >
             <Ionicons name="volume-high" size={14} color="#FFFFFF" />
